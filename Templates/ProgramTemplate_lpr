@@ -1,0 +1,27 @@
+program $(LAZWIZProjectName);
+{$mode objfpc}{$H-}
+{$goto on}
+
+uses
+  uInterrupts;
+  
+//const
+  {Constant Declarations}
+//var
+  {Variable Declarations}
+
+//=== Entry point =============================================================  
+begin
+
+
+
+  //=== Main loop =========================================
+  while True do
+  begin
+
+
+      
+  end;//Main loop
+  
+end.
+

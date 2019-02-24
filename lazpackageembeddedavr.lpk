@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="LazPackageEmbeddedAVR"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <OtherUnitFiles Value="synaser"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Version Minor="1"/>
+    <Files Count="6">
+      <Item1>
+        <Filename Value="lazpackageembeddedavr_intf.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="lazpackageembeddedavr_intf"/>
+      </Item1>
+      <Item2>
+        <Filename Value="dlgnewavrproject.pas"/>
+        <UnitName Value="dlgNewAVRProject"/>
+      </Item2>
+      <Item3>
+        <Filename Value="uavrproject.pas"/>
+        <UnitName Value="uAVRProject"/>
+      </Item3>
+      <Item4>
+        <Filename Value="udeviceloader.pas"/>
+        <UnitName Value="uDeviceLoader"/>
+      </Item4>
+      <Item5>
+        <Filename Value="ustrings.pas"/>
+        <UnitName Value="UStrings"/>
+      </Item5>
+      <Item6>
+        <Filename Value="ucomutils.pas"/>
+        <UnitName Value="uCOMUtils"/>
+      </Item6>
+    </Files>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

@@ -1,0 +1,7 @@
+Package: LazPackageEmbeddedAVR
+Author: kupferstecher
+
+The licence of the package is GPL, except for the third party units.
+For the licence text see file COPYING.GPL.TXT
+
+The package contains and uses the synaser package, the licence can be found in the regarding sourcecode files. Especially take care to observe the license conditions in case you want to distribute the package in binary form.
