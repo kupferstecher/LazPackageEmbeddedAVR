@@ -1,1 +1,0 @@
-stk500.exe -d$(LAZWIZDevice) -e -if$(LAZWIZProject).hex -pf -vf
