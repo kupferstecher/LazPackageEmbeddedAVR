@@ -1,0 +1,10 @@
+#"Description" "Command line"
+# The following programming software comes shipped with AVR Studio 4 
+"AVR Studio 4 - STK500" "stk500.exe -d$(LAZWIZDevice) -e -pf -vf -if$(LAZWIZProject).hex"
+"AVR Studio 4 - AVRISP" "stk500.exe -d$(LAZWIZDevice) -e -pf -vf -if$(LAZWIZProject).hex"
+"AVR Studio 4 - AVRISP MKII" "stk500.exe -cUSB -d$(LAZWIZDevice) -e -pf -vf -if$(LAZWIZProject).hex"
+"AVR Studio 4 - JTAGICE" "jtag.exe -d$(LAZWIZDevice) -e -pf -vf -if$(LAZWIZProject).hex"
+"AVR Studio 4 - JTAGICE MKII JTAG mode" "jtagiceii.exe -d$(LAZWIZDevice) -e -pf -vf -if$(LAZWIZProject).hex"
+"AVR Studio 4 - JTAGICE MKII ISP mode" "jtagiceii.exe -d$(LAZWIZDevice) -e -pf -vf -if$(LAZWIZProject).hex -mi"
+"AVR Studio 4 - AVR Dragon JTAG mode" "AVRDragon.exe -d$(LAZWIZDevice) -e -pf -vf -if$(LAZWIZProject).hex"
+"AVR Studio 4 - AVR Dragon ISP mode" "AVRDragon.exe -d$(LAZWIZDevice) -e -pf -vf -if$(LAZWIZProject).hex -mi"
