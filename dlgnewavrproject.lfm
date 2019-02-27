@@ -18,7 +18,7 @@ object dlgAVRProjForm: TdlgAVRProjForm
     Height = 500
     Top = 0
     Width = 750
-    PageIndex = 3
+    PageIndex = 1
     Align = alClient
     TabOrder = 0
     TabStop = True
@@ -752,12 +752,12 @@ object dlgAVRProjForm: TdlgAVRProjForm
           ItemHeight = 20
           ItemIndex = 0
           Items.Strings = (
-            'STK500'
+            'AVR Studio - STK500'
           )
           OnChange = ComboBoxProgrammerOthersChange
           Style = csDropDownList
           TabOrder = 1
-          Text = 'STK500'
+          Text = 'AVR Studio - STK500'
         end
       end
       object PanelCOMPortList: TPanel

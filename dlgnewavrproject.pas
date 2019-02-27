@@ -220,10 +220,10 @@ begin
     'Programmers can be added easily.'+#13+#10
     +'For examples check the subfolder ''Programmer'' in the package installation directory. '
     +'This is where you unpacked the files before you started the package installation.'+#13+#10
-    +'Create a text file with the programmer command line as content. '
-    +'The file name you can choose randomly, it will be the name shown in the dropdown menu. '
-    +'Don''t use any file extension. '
-    +'Place the file in the proper directory besides the existing ones.'+#13+#10
+    +'For a new programmer add a line in the definition files ''AVRDude.dat'' or ''Others.dat''. '
+    +'The first string in quotation marks is the name of the programmer displayed '
+    +'in the pulldown menu. The second string in quotation marks is the '
+    +'command line for the programmer.'+#13+#10
     +'Next time you start the new AVR project dialog, your programmer will '
     +'be listed automatically, no recompilation needed.' +#13+#10
     +#13+#10
@@ -381,12 +381,12 @@ begin
 
   TDeviceLoader.LoadProgAvrdude;
   ComboBoxProgrammerDude.Items.Clear;
-  ComboBoxProgrammerDude.Items.Assign(TDeviceLoader.ProgrammerListDude);
+  ComboBoxProgrammerDude.Items.Assign(TDeviceLoader.ProgrammerListDude_Names);
   ComboBoxProgrammerDude.ItemIndex:= ComboBoxProgrammerDude.Items.IndexOf('stk500v2');
 
   TDeviceLoader.LoadProgOthers;
   ComboBoxProgrammerOthers.Items.Clear;
-  ComboBoxProgrammerOthers.Items.Assign(TDeviceLoader.ProgrammerListOthers);
+  ComboBoxProgrammerOthers.Items.Assign(TDeviceLoader.ProgrammerListOthers_Names);
   ComboBoxProgrammerOthers.ItemIndex:= 0;
   PanelProgrammerOthers.Top:= PanelUtility.Top + 48;
   PanelProgrammerOthers.Visible:= false;
@@ -396,6 +396,7 @@ begin
 end;
 
 Procedure TdlgAVRProjForm.ProgrammerSelect;
+var Command: String;
 begin
   //ShowMessage('TdlgAVRProjForm.ProgrammerSelect');
 
@@ -411,7 +412,9 @@ begin
   1:begin //AVR Dude
       PanelProgrammerOthers.Visible:= false;
       PanelProgrammerDude.Visible:= true;
-      EditCommandLine.Text:= TAVRProject.CommandAdaption(TDeviceLoader.LoadCommand);
+      if ComboBoxProgrammerDude.ItemIndex < 0 then ComboBoxProgrammerDude.ItemIndex:= 0;
+      Command:= TDeviceLoader.ProgrammerListDude_Commands.Strings[ComboBoxProgrammerDude.ItemIndex];
+      EditCommandLine.Text:= TAVRProject.CommandAdaption(Command);
       if TAVRProject.ProgrammerNeedsPort then begin
         PanelPort.Visible:= true;
         PanelCOMPortList.Visible:= true; PortsListUpdate;
@@ -425,7 +428,9 @@ begin
   2:begin //Others
       PanelProgrammerDude.Visible:= false;
       PanelProgrammerOthers.Visible:= true;
-      EditCommandLine.Text:= TAVRProject.CommandAdaption(TDeviceLoader.LoadCommand);
+      if ComboBoxProgrammerOthers.ItemIndex < 0 then ComboBoxProgrammerOthers.ItemIndex:= 0;
+      Command:= TDeviceLoader.ProgrammerListOthers_Commands.Strings[ComboBoxProgrammerOthers.ItemIndex];
+      EditCommandLine.Text:= TAVRProject.CommandAdaption(Command);
       if TAVRProject.ProgrammerNeedsPort then begin
         PanelPort.Visible:= true;
         PanelCOMPortList.Visible:= true; PortsListUpdate;

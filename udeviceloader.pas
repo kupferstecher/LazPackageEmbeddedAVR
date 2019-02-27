@@ -42,8 +42,10 @@ Type TDeviceLoader = class
     Class var DeviceList: TStringList;
     Class var InstrSetDevicesList,InstrSetList: TStringList;
     Class var CollectedInstructionSets: TStringList;
-    Class var ProgrammerListDude: TStringList;
-    Class var ProgrammerListOthers: TStringList;
+    Class var ProgrammerListDude_Names: TStringList;
+    Class var ProgrammerListDude_Commands: TStringList;
+    Class var ProgrammerListOthers_Names: TStringList;
+    Class var ProgrammerListOthers_Commands: TStringList;
    private
     Class var SearchResult: TSearchRec;
 
@@ -54,9 +56,6 @@ Type TDeviceLoader = class
    public
     Class Procedure LoadProgAvrdude;
     Class Procedure LoadProgOthers;
-    Class Function LoadCommand:string;
-   private
-    Class Procedure LoadFile(AFileName:string; var AFileData: string);
 end;
 
 //##############################################################################
@@ -152,117 +151,88 @@ end;
 //-------------------------------------------------------------------
 Class Procedure TDeviceLoader.LoadProgAvrdude;
 var
-  Status: Integer;
-  FileName: string;
+  FileLines: TStringList;
+  CurrentLine,NameString,CommandString: string;
+  pp1,pp2: Integer;
 begin
 
-  ProgrammerListDude:= TStringList.Create;
+  ProgrammerListDude_Names:= TStringList.Create;
+  ProgrammerListDude_Commands:= TStringList.Create;
 
-  Status:= FindFirst(TAVRProject.PackagePath+'Programmer'+DirectorySeparator
-                             +'AVRDude'+DirectorySeparator+'*',0,SearchResult);
+  FileLines:= TStringList.Create;
 
-  if Status <> 0 then begin
-    FindClose(SearchResult);
+  try
+    FileLines.LoadFromFile(TAVRProject.PackagePath+'Programmer'
+                                         + DirectorySeparator + 'AVRDude.dat');
+  except on e:Exception do begin
     ShowMessage('Error: Couldn''t load programmer definition files for AVRDude. Installation error?');
-    EXIT;
-  end;//if
+    FileLines.Free; EXIT;
+  end;end;//try
 
-  While (Status = 0) Do Begin
-    //Add Programmer to List
-    FileName:= SearchResult.Name;
-    ProgrammerListDude.Add(FileName);
+  For CurrentLine in FileLines Do Begin
 
-    //Find next Device
-    Status:= FindNext(SearchResult);
+    if length(trim(CurrentLine)) = 0 then CONTINUE;
+    if SCAN(trimleft(CurrentLine),'#') = 1 then CONTINUE;
+    pp1:= SCAN(CurrentLine,'"');       if pp1 = 0 then CONTINUE;
+    pp2:= SCAN(CurrentLine,'"',pp1+1); if pp2 = 0 then CONTINUE;
+    NameString:= trim(CopyUntil(CurrentLine,pp1+1,pp2-1));
+    if length(NameString) = 0 then CONTINUE;
+
+    pp1:= SCAN(CurrentLine,'"',pp2+1); if pp1 = 0 then CONTINUE;
+    pp2:= SCAN(CurrentLine,'"',pp1+1); if pp2 = 0 then CONTINUE;
+    CommandString:= trim(CopyUntil(CurrentLine,pp1+1,pp2-1));
+    if length(CommandString) = 0 then CONTINUE;
+
+    ProgrammerListDude_Names.Add(NameString);
+    ProgrammerListDude_Commands.Add(CommandString);
 
   End;//Do
 
-  FindClose(SearchResult);
+  FileLines.Free;
 
 end;
 
 //-------------------------------------------------------------------
 Class Procedure TDeviceLoader.LoadProgOthers;
 var
-  Status: Integer;
-  FileName: string;
+  FileLines: TStringList;
+  CurrentLine,NameString,CommandString: string;
+  pp1,pp2: Integer;
 begin
 
-  ProgrammerListOthers:= TStringList.Create;
+  ProgrammerListOthers_Names:= TStringList.Create;
+  ProgrammerListOthers_Commands:= TStringList.Create;
 
-  Status:= FindFirst(TAVRProject.PackagePath+'Programmer'+DirectorySeparator
-                              +'Others'+DirectorySeparator+'*',0,SearchResult);
+  FileLines:= TStringList.Create;
 
-  if Status <> 0 then begin
+  try
+    FileLines.LoadFromFile(TAVRProject.PackagePath+'Programmer'
+                                         + DirectorySeparator + 'Others.dat');
+  except on e:Exception do begin
     ShowMessage('Error: Couldn''t load programmer definition files. Installation error?');
-    FindClose(SearchResult);
-    EXIT;
-  end;//if
+    FileLines.Free; EXIT;
+  end;end;//try
 
-  While (Status = 0) Do Begin
-    //Add Programmer to List
-    FileName:= SearchResult.Name;
-    ProgrammerListOthers.Add(FileName);
+  For CurrentLine in FileLines Do Begin
 
-    //Find next Device
-    Status:= FindNext(SearchResult);
+    if length(trim(CurrentLine)) = 0 then CONTINUE;
+    if SCAN(trimleft(CurrentLine),'#') = 1 then CONTINUE;
+    pp1:= SCAN(CurrentLine,'"');       if pp1 = 0 then CONTINUE;
+    pp2:= SCAN(CurrentLine,'"',pp1+1); if pp2 = 0 then CONTINUE;
+    NameString:= trim(CopyUntil(CurrentLine,pp1+1,pp2-1));
+    if length(NameString) = 0 then CONTINUE;
+
+    pp1:= SCAN(CurrentLine,'"',pp2+1); if pp1 = 0 then CONTINUE;
+    pp2:= SCAN(CurrentLine,'"',pp1+1); if pp2 = 0 then CONTINUE;
+    CommandString:= trim(CopyUntil(CurrentLine,pp1+1,pp2-1));
+    if length(CommandString) = 0 then CONTINUE;
+
+    ProgrammerListOthers_Names.Add(NameString);
+    ProgrammerListOthers_Commands.Add(CommandString);
 
   End;//Do
 
-  FindClose(SearchResult);
-
-end;
-
-//-------------------------------------------------------------------
-Class Function TDeviceLoader.LoadCommand:string;
-var
-  FileName: String;
-begin
-  Result:= '';
-  Case dlgAVRProjForm.ComboBoxSoftware.ItemIndex of
-  0:begin //Custom Commandline
-    end;
-  1:begin //AVR Dude
-      if dlgAVRProjForm.ComboBoxProgrammerDude.ItemIndex < 0 then EXIT;
-      FileName:=
-      ProgrammerListDude.Strings[dlgAVRProjForm.ComboBoxProgrammerDude.ItemIndex];
-      FileName:= TAVRProject.PackagePath+'Programmer'+DirectorySeparator+'AVRDude'+DirectorySeparator+FileName;
-      LoadFile(FileName,Result);
-    end;
-  2:begin //Others
-      if dlgAVRProjForm.ComboBoxProgrammerOthers.ItemIndex < 0 then EXIT;
-      FileName:=
-      ProgrammerListOthers.Strings[dlgAVRProjForm.ComboBoxProgrammerOthers.ItemIndex];
-      FileName:= TAVRProject.PackagePath+'Programmer'+DirectorySeparator+'Others'+DirectorySeparator+FileName;
-      LoadFile(FileName,Result);
-    end;
-  end;//case
-
-end;
-
-//-------------------------------------------------------------------
-Class Procedure TDeviceLoader.LoadFile(AFileName:string; var AFileData: string);
-var
-  cmdFile: TextFile;
-begin
-  AFileData:= '';
-  try
-    AssignFile(cmdFile, AFileName);
-    Reset(cmdFile); //Try to open for reading
-  except on e:Exception do begin
-      dlgAVRProjForm.PromptMessage('Internal Error!','Couldn''t open file:'
-      +#13+#10 + ' '+AFilename);
-      EXIT;
-  end;end;//try
-
-  try
-    if not EOF(cmdFile) then ReadLn(cmdFile,AFileData);
-  except on e:Exception do begin
-    dlgAVRProjForm.PromptMessage('Internal Error!','Couldn''t open file:'
-    +#13+#10 + ' '+AFilename);
-  end;end;//try
-
-  CloseFile(cmdFile);
+  FileLines.Free;
 
 end;
 
